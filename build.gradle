@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.0'
     id 'org.asciidoctor.convert' version '1.5.8'
     id 'java'
+    id "com.heroku.sdk.heroku-gradle" version "2.0.0"
 }
 
 group = 'com.example'
@@ -26,15 +27,19 @@ ext {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
     compileOnly 'org.projectlombok:lombok'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0-RC1'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+//    implementation 'org.springdoc:springdoc-openapi-ui:1.6.12'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.security:spring-security-test'
+
 }
 
 tasks.named('test') {
@@ -45,4 +50,22 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
     inputs.dir snippetsDir
     dependsOn test
+}
+
+heroku {
+    appName = "teek-must-be"
+    jdkVersion = "zulu-17"
+    processTypes(
+            web: "java \$JAVA_OPTS -jar build/libs/*.jar -Dserver.port=\$PORT \$JAR_OPTS"
+    )
+    includes = ["build/libs/TeekMustBE-0.0.1-SNAPSHOT.jar"]
+    includeBuildDir = false
+}
+
+task deploy {
+    dependsOn 'clean'
+    dependsOn 'bootJar'
+    dependsOn 'deployHeroku'
+    tasks.findByName('bootJar').mustRunAfter 'clean'
+    tasks.findByName('deployHeroku').mustRunAfter 'bootJar'
 }

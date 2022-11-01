@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
     @Bean
-    public OpenAPI custom(@Value("Teek Must Pencils Market Place") String appDescription, @Value("v1.0.0") String appversion) {
+    public OpenAPI custom(@Value("Java Spring Based Todo REST API") String appDescription, @Value("v1.0.0") String appversion) {
         return new OpenAPI().info(new Info()
-                .title("Documentation for Market Place API's")
+                .title("Java Spring Based Todo REST API")
                 .version(appversion)
                 .description(appDescription)
                 .termsOfService("https://swagger.io/terms")
