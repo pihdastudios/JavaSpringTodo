@@ -2,6 +2,7 @@ package com.example.javaspringtodo.controller;
 
 import com.example.javaspringtodo.dto.UserDto;
 import com.example.javaspringtodo.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/")
+    @Operation(summary = "Menambahkan user dengan kode XXXX (angka)")
     public ResponseEntity<?> addUser(UserDto userDto) {
         return userService.saveUser(userDto) ?
                 new ResponseEntity<>("User Registered", HttpStatus.CREATED) :
